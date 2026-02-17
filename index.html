@@ -4,9 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <!-- Updated meta tags to fix deprecation warning -->
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#0f172a">
+  
   <title>AceTrack Bankroll</title>
   
   <!-- Favicon to fix 404 -->
@@ -39,8 +42,15 @@
       background-color: #020617;
       color: #f8fafc;
       overflow-x: hidden;
+      margin: 0;
+      padding: 0;
       /* Better safe area handling for newer iPhones */
       padding-top: env(safe-area-inset-top);
+    }
+    #root {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
     .safe-bottom {
       padding-bottom: calc(env(safe-area-inset-bottom) + 0.75rem);
@@ -71,5 +81,7 @@
 </head>
 <body>
   <div id="root"></div>
+  <!-- CRITICAL: Added the script tag to load the app logic -->
+  <script type="module" src="index.tsx"></script>
 </body>
 </html>
