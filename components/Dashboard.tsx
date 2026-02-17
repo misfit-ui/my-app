@@ -45,6 +45,8 @@ const Dashboard: React.FC<DashboardProps> = ({ data, totalBankroll, onAddSession
     return totals;
   }, [data.accounts]);
 
+  const formatCurrency = (val: number) => val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
   return (
     <div className="p-4 space-y-6">
       {/* Total Bankroll Card */}
@@ -57,7 +59,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, totalBankroll, onAddSession
         <div className="relative z-10">
           <p className="text-indigo-200 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Total Net Worth</p>
           <h2 className="text-3xl font-black tracking-tight mb-4 overflow-hidden text-ellipsis">
-            ${totalBankroll.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            ${formatCurrency(totalBankroll)}
           </h2>
           
           {/* Breakdown Pills */}
@@ -65,19 +67,19 @@ const Dashboard: React.FC<DashboardProps> = ({ data, totalBankroll, onAddSession
             <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/5">
               <Globe size={10} className="text-indigo-300" />
               <span className="text-[9px] font-black text-indigo-100 uppercase tracking-tighter">
-                Sites: ${composition.Site.toLocaleString()}
+                Sites: ${formatCurrency(composition.Site)}
               </span>
             </div>
             <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/5">
               <Wallet size={10} className="text-emerald-300" />
               <span className="text-[9px] font-black text-emerald-100 uppercase tracking-tighter">
-                Wallets: ${composition.Wallet.toLocaleString()}
+                Wallets: ${formatCurrency(composition.Wallet)}
               </span>
             </div>
             <div className="flex items-center gap-1.5 bg-black/20 backdrop-blur-md rounded-full px-2.5 py-1 border border-white/5">
               <Banknote size={10} className="text-amber-300" />
               <span className="text-[9px] font-black text-amber-100 uppercase tracking-tighter">
-                Cash: ${composition.Cash.toLocaleString()}
+                Cash: ${formatCurrency(composition.Cash)}
               </span>
             </div>
           </div>
@@ -94,7 +96,7 @@ const Dashboard: React.FC<DashboardProps> = ({ data, totalBankroll, onAddSession
               <span className="text-[10px] text-indigo-100 uppercase font-black tracking-wider">7D Profit</span>
               <div className="flex items-center gap-1">
                 {weeklyStats.profit >= 0 ? <TrendingUp size={14} className="text-emerald-400" /> : <TrendingDown size={14} className="text-rose-400" />}
-                <span className="text-sm font-black">${Math.abs(weeklyStats.profit).toFixed(0)}</span>
+                <span className="text-sm font-black">${formatCurrency(Math.abs(weeklyStats.profit))}</span>
               </div>
             </div>
           </div>
