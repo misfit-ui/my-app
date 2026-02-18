@@ -8,7 +8,6 @@ interface AccountsListProps {
   onAdd: (account: Omit<Account, 'id'>) => void;
   onUpdate: (id: string, updates: Partial<Account>) => void;
   onDelete: (id: string) => void;
-  // Added transactions prop for export functionality
   transactions?: Transaction[];
 }
 
@@ -63,16 +62,16 @@ const AccountsList: React.FC<AccountsListProps> = ({ accounts, onAdd, onUpdate, 
         <h2 className="text-2xl font-black tracking-tight">Accounts</h2>
         <button 
           onClick={handleOpenAdd}
-          className="bg-indigo-600 text-white p-2 rounded-xl flex items-center gap-2 px-4 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all"
+          className="bg-indigo-600 text-white p-2 rounded-xl flex items-center gap-2 px-4 shadow-lg shadow-indigo-500/20 active:scale-95 transition-all hover:bg-indigo-500"
         >
           <Plus size={18} />
           <span className="text-xs font-black uppercase tracking-widest">New</span>
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
         {accounts.map(acc => (
-          <div key={acc.id} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between group relative overflow-hidden transition-all hover:border-slate-700">
+          <div key={acc.id} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex items-center justify-between group relative overflow-hidden transition-all hover:border-slate-700 hover:bg-slate-800/50">
             <div className="flex items-center gap-4 z-0">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl bg-slate-800 border border-white/5`}>
                 {acc.icon}
@@ -118,7 +117,7 @@ const AccountsList: React.FC<AccountsListProps> = ({ accounts, onAdd, onUpdate, 
       {/* Data Management Section */}
       <div className="mt-8 pt-8 border-t border-slate-800/50">
         <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-4 px-1">Data Management</h3>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <button 
             onClick={exportToCSV}
             className="flex flex-col items-center justify-center gap-2 p-4 bg-slate-900 border border-slate-800 rounded-2xl hover:bg-slate-800 transition-colors"
@@ -168,8 +167,8 @@ const AccountModal = ({ account, onClose, onSave }: AccountModalProps) => {
   const icons = ['♠️', '🃏', '🦊', '🛡️', '💵', '💰', '🏦', '💎', '📈', '📱', '💻', '🔥', '⭐️'];
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[60] flex items-end justify-center animate-in fade-in duration-200">
-      <div className="bg-slate-900 w-full max-w-md rounded-t-3xl p-6 pb-12 animate-in slide-in-from-bottom duration-300 border-t border-slate-800">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md z-[60] flex items-end md:items-center justify-center animate-in fade-in duration-200">
+      <div className="bg-slate-900 w-full max-w-md rounded-t-3xl md:rounded-3xl p-6 pb-12 md:pb-6 animate-in slide-in-from-bottom duration-300 md:zoom-in-95 border-t md:border border-slate-800 shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-black">{account ? 'Edit Account' : 'Add Account'}</h2>
           <button onClick={onClose} className="p-1 text-slate-400 hover:text-white transition-colors"><X size={24} /></button>

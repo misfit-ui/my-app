@@ -11,7 +11,8 @@ import {
   X,
   Check,
   AlertTriangle,
-  Trash2
+  Trash2,
+  LogOut
 } from 'lucide-react';
 import { db } from './services/db';
 import { Account, Transaction, BankrollData } from './types';
@@ -130,51 +131,89 @@ export default function App() {
   }, [accountToDelete]);
 
   return (
-    <div className="flex flex-col h-screen max-w-md mx-auto bg-slate-950 text-slate-50 relative overflow-hidden">
-      <header className="p-4 flex justify-between items-center border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10">
-        <div className="flex items-center gap-2">
+    <div className="flex h-screen w-full bg-slate-950 text-slate-50 overflow-hidden selection:bg-indigo-500/30">
+      
+      {/* Desktop/Tablet Sidebar */}
+      <aside className="hidden md:flex flex-col w-64 border-r border-slate-800 bg-slate-900/40 p-6 gap-8">
+        <div className="flex items-center gap-3 px-2">
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold italic shadow-lg shadow-indigo-500/20">A</div>
           <h1 className="text-xl font-bold tracking-tight">AceTrack</h1>
         </div>
-        <div className="flex gap-2">
-          <button 
-            onClick={() => setShowTransferModal(true)}
-            className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"
-          >
-            <ArrowLeftRight size={20} className="text-indigo-400" />
-          </button>
+        
+        <nav className="flex flex-col gap-2 flex-1">
+          <NavButton icon={HomeIcon} label="Dashboard" active={activeTab === 'home'} onClick={() => setActiveTab('home')} vertical />
+          <NavButton icon={Wallet} label="Accounts" active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} vertical />
+          <NavButton icon={History} label="Activity" active={activeTab === 'activity'} onClick={() => setActiveTab('activity')} vertical />
+          <NavButton icon={BarChart3} label="Analytics" active={activeTab === 'stats'} onClick={() => setActiveTab('stats')} vertical />
+        </nav>
+
+        <div className="pt-6 border-t border-slate-800">
+           <button 
+             onClick={() => setShowTransferModal(true)}
+             className="w-full bg-slate-800 hover:bg-slate-700 p-3 rounded-xl flex items-center gap-3 transition-colors group"
+           >
+             <div className="p-1.5 bg-slate-700 rounded-lg group-hover:bg-slate-600 transition-colors">
+               <ArrowLeftRight size={16} className="text-indigo-400" />
+             </div>
+             <span className="text-xs font-bold uppercase tracking-widest text-slate-300">Quick Transfer</span>
+           </button>
         </div>
-      </header>
+      </aside>
 
-      <main className="flex-1 overflow-y-auto hide-scrollbar pb-24">
-        {activeTab === 'home' && <Dashboard data={data} totalBankroll={totalBankroll} onAddSession={() => setShowSessionModal(true)} />}
-        {activeTab === 'accounts' && (
-          <AccountsList 
-            accounts={data.accounts} 
-            transactions={data.transactions}
-            onAdd={handleAddAccount} 
-            onUpdate={handleUpdateAccount} 
-            onDelete={setAccountToDelete} 
-          />
-        )}
-        {activeTab === 'activity' && <ActivityFeed transactions={data.transactions} accounts={data.accounts} />}
-        {activeTab === 'stats' && <StatsOverview transactions={data.transactions} />}
-      </main>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col relative min-w-0">
+        {/* Mobile Header */}
+        <header className="md:hidden p-4 flex justify-between items-center border-b border-slate-800 bg-slate-900/50 backdrop-blur-md sticky top-0 z-10">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-bold italic shadow-lg shadow-indigo-500/20">A</div>
+            <h1 className="text-xl font-bold tracking-tight">AceTrack</h1>
+          </div>
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setShowTransferModal(true)}
+              className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors"
+            >
+              <ArrowLeftRight size={20} className="text-indigo-400" />
+            </button>
+          </div>
+        </header>
 
-      <button 
-        onClick={() => setShowSessionModal(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-900/40 active:scale-90 transition-transform z-20"
-      >
-        <Plus size={32} />
-      </button>
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto hide-scrollbar scroll-smooth">
+          <div className="max-w-7xl mx-auto w-full p-0 md:p-8 pb-32 md:pb-8">
+            {activeTab === 'home' && <Dashboard data={data} totalBankroll={totalBankroll} onAddSession={() => setShowSessionModal(true)} />}
+            {activeTab === 'accounts' && (
+              <AccountsList 
+                accounts={data.accounts} 
+                transactions={data.transactions}
+                onAdd={handleAddAccount} 
+                onUpdate={handleUpdateAccount} 
+                onDelete={setAccountToDelete} 
+              />
+            )}
+            {activeTab === 'activity' && <ActivityFeed transactions={data.transactions} accounts={data.accounts} />}
+            {activeTab === 'stats' && <StatsOverview transactions={data.transactions} />}
+          </div>
+        </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900/90 backdrop-blur-lg border-t border-slate-800 flex items-center justify-around px-2 py-3 safe-bottom z-30">
-        <NavButton icon={HomeIcon} label="Home" active={activeTab === 'home'} onClick={() => setActiveTab('home')} />
-        <NavButton icon={Wallet} label="Accounts" active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} />
-        <NavButton icon={History} label="Activity" active={activeTab === 'activity'} onClick={() => setActiveTab('activity')} />
-        <NavButton icon={BarChart3} label="Stats" active={activeTab === 'stats'} onClick={() => setActiveTab('stats')} />
-      </nav>
+        {/* Floating Action Button */}
+        <button 
+          onClick={() => setShowSessionModal(true)}
+          className="fixed bottom-24 right-6 md:bottom-10 md:right-10 w-14 h-14 md:w-16 md:h-16 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-900/40 active:scale-90 hover:scale-105 hover:bg-indigo-500 transition-all z-20"
+        >
+          <Plus size={32} />
+        </button>
 
+        {/* Mobile Bottom Navigation */}
+        <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-lg border-t border-slate-800 flex items-center justify-around px-2 py-3 safe-bottom z-30">
+          <NavButton icon={HomeIcon} label="Home" active={activeTab === 'home'} onClick={() => setActiveTab('home')} />
+          <NavButton icon={Wallet} label="Accounts" active={activeTab === 'accounts'} onClick={() => setActiveTab('accounts')} />
+          <NavButton icon={History} label="Activity" active={activeTab === 'activity'} onClick={() => setActiveTab('activity')} />
+          <NavButton icon={BarChart3} label="Stats" active={activeTab === 'stats'} onClick={() => setActiveTab('stats')} />
+        </nav>
+      </div>
+
+      {/* Modals */}
       {showSessionModal && (
         <SessionModal 
           accounts={data.accounts} 
@@ -200,13 +239,31 @@ export default function App() {
   );
 }
 
-const NavButton = ({ icon: Icon, label, active, onClick }: { icon: any, label: string, active: boolean, onClick: () => void }) => (
+interface NavButtonProps {
+  icon: any;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  vertical?: boolean;
+}
+
+const NavButton = ({ icon: Icon, label, active, onClick, vertical = false }: NavButtonProps) => (
   <button 
     onClick={onClick}
-    className={`flex flex-col items-center gap-1 transition-all duration-300 ${active ? 'text-indigo-400 scale-110' : 'text-slate-500 hover:text-slate-300'}`}
+    className={`
+      transition-all duration-300 rounded-xl
+      ${vertical 
+        ? 'flex w-full items-center gap-3 p-3 hover:bg-slate-800/50' 
+        : 'flex flex-col items-center gap-1'
+      }
+      ${active 
+        ? vertical ? 'bg-indigo-500/10 text-indigo-400' : 'text-indigo-400 scale-110' 
+        : 'text-slate-500 hover:text-slate-300'
+      }
+    `}
   >
-    <Icon size={24} strokeWidth={active ? 2.5 : 2} />
-    <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+    <Icon size={vertical ? 20 : 24} strokeWidth={active ? 2.5 : 2} />
+    <span className={`${vertical ? 'text-xs' : 'text-[10px]'} font-bold uppercase tracking-widest`}>{label}</span>
   </button>
 );
 
@@ -277,8 +334,8 @@ const SessionModal = ({ accounts, onClose, onSubmit }: SessionModalProps) => {
   }, 0);
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center animate-in fade-in duration-200">
-      <div className="bg-slate-900 w-full max-w-md rounded-t-3xl p-6 pb-12 animate-in slide-in-from-bottom duration-300 border-t border-slate-800 flex flex-col max-h-[95vh]">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center animate-in fade-in duration-200">
+      <div className="bg-slate-900 w-full max-w-md rounded-t-3xl md:rounded-3xl p-6 pb-12 md:pb-6 animate-in slide-in-from-bottom duration-300 md:zoom-in-95 border-t md:border border-slate-800 flex flex-col max-h-[95vh] shadow-2xl">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-xl font-bold">Session Summary</h2>
@@ -357,8 +414,8 @@ const TransferModal = ({ accounts, onClose, onSubmit }: TransferModalProps) => {
   const [amount, setAmount] = useState('');
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end justify-center animate-in fade-in duration-200">
-      <div className="bg-slate-900 w-full max-w-md rounded-t-3xl p-6 pb-12 animate-in slide-in-from-bottom duration-300 border-t border-slate-800">
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end md:items-center justify-center animate-in fade-in duration-200">
+      <div className="bg-slate-900 w-full max-w-md rounded-t-3xl md:rounded-3xl p-6 pb-12 md:pb-6 animate-in slide-in-from-bottom duration-300 md:zoom-in-95 border-t md:border border-slate-800 shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">Move Money</h2>
           <button onClick={onClose} className="p-1 text-slate-400 hover:text-white"><X size={24} /></button>

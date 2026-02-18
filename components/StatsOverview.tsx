@@ -43,7 +43,7 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ transactions }) => {
     <div className="p-4 space-y-6">
       <h2 className="text-2xl font-bold">Analytics</h2>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
           <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Total Profit</p>
           <p className={`text-xl font-bold ${totalProfit >= 0 ? 'text-emerald-500' : 'text-rose-500'}`}>
@@ -54,11 +54,21 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ transactions }) => {
           <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Win Rate</p>
           <p className="text-xl font-bold text-indigo-400">{winRate.toFixed(1)}%</p>
         </div>
+        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+          <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Total Sessions</p>
+          <p className="text-xl font-bold text-slate-200">{totalSessions}</p>
+        </div>
+        <div className="bg-slate-900 p-4 rounded-2xl border border-slate-800">
+           <p className="text-[10px] uppercase font-bold text-slate-500 mb-1">Avg Profit</p>
+           <p className="text-xl font-bold text-emerald-400">
+             ${totalSessions > 0 ? (totalProfit / totalSessions).toFixed(2) : '0.00'}
+           </p>
+        </div>
       </div>
 
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
         <h3 className="font-bold text-sm text-slate-400 mb-4 uppercase tracking-widest">Growth Curve</h3>
-        <div className="h-64 w-full">
+        <div className="h-64 md:h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData}>
               <defs>
@@ -88,22 +98,19 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ transactions }) => {
       </div>
 
       <div className="space-y-3">
-        <h3 className="font-bold text-sm text-slate-400 uppercase tracking-widest">Session Stats</h3>
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex justify-between">
-           <div className="text-center">
-              <p className="text-slate-500 text-[10px] font-bold">COUNT</p>
-              <p className="font-bold text-lg">{totalSessions}</p>
-           </div>
-           <div className="text-center">
-              <p className="text-slate-500 text-[10px] font-bold">AVG PROFIT</p>
-              <p className="font-bold text-lg text-emerald-500">
-                ${totalSessions > 0 ? (totalProfit / totalSessions).toFixed(2) : '0.00'}
-              </p>
-           </div>
+        <h3 className="font-bold text-sm text-slate-400 uppercase tracking-widest">Performance Insights</h3>
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row gap-6 md:gap-12 md:justify-around">
            <div className="text-center">
               <p className="text-slate-500 text-[10px] font-bold">BEST SESSION</p>
-              <p className="font-bold text-lg text-indigo-400">
+              <p className="font-bold text-2xl text-indigo-400">
                 ${Math.max(...transactions.filter(t => t.type === 'SESSION').map(t => t.isProfit ? t.amount : -t.amount), 0).toFixed(2)}
+              </p>
+           </div>
+           <div className="text-center hidden md:block w-px bg-slate-800"></div>
+           <div className="text-center">
+              <p className="text-slate-500 text-[10px] font-bold">WORST SESSION</p>
+              <p className="font-bold text-2xl text-rose-500">
+                ${Math.min(...transactions.filter(t => t.type === 'SESSION').map(t => t.isProfit ? t.amount : -t.amount), 0).toFixed(2)}
               </p>
            </div>
         </div>
